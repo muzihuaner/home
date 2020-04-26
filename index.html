@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Home</title>
+  </head>
+  <body>
+    <div id="search">
+      <input
+        id="search-field"
+        type="text"
+        name="search-field"
+        onkeypress="return search(event)"
+      />
+    </div>
+    <div class="container">
+      <div id="clock"></div>
+      <div class="weather-container">
+        <div class="row">
+          <div id="weather-description" class="inline"></div>
+          <div class="inline">-</div>
+          <div id="temp" class="inline"></div>
+        </div>
+      </div>
+      <div class="bookmark-container">
+        <div class="bookmark-set">
+          <div class="bookmark-title">日常</div>
+          <div class="bookmark-inner-container">
+            <a class="bookmark" href="https://quickso.cn/" target="_blank"
+              >快点搜</a
+            >
+            <a class="bookmark" href="https://github.com/" target="_blank"
+              >GitHub</a
+            >
+            <a
+              class="bookmark"
+              href="https://www.cnblogs.com/HGNET/"
+              target="_blank"
+              >博客</a
+            >
+          </div>
+        </div>
+        <div class="bookmark-set">
+          <div class="bookmark-title">视听</div>
+          <div class="bookmark-inner-container">
+            <a class="bookmark" href="https://www.bilibili.com/" target="_blank"
+              >Bilibili</a
+            >
+            <a class="bookmark" href="http://huangenet.cn/tools/music/" target="_blank"
+              >音乐</a
+            >
+            <a href="https://www.youtube.com/" class="bookmark" target="_blank"
+              >Youtube</a
+            >
+          </div>
+        </div>
+        <div class="bookmark-set">
+          <div class="bookmark-title">自媒体</div>
+          <div class="bookmark-inner-container">
+            <a
+              class="bookmark"
+              href="https://mp.weixin.qq.com/"
+              target="_blank"
+              >微信公众平台</a
+            >
+            <a
+              class="bookmark"
+              href="https://www.135editor.com/"
+              target="_blank"
+              >135编辑器</a
+            >
+
+            <a class="bookmark" href="https://ps.gaoding.com/#/" target="_blank"
+              >在线PS</a
+            >
+          </div>
+        </div>
+        <div class="bookmark-set">
+          <div class="bookmark-title">社交</div>
+          <div class="bookmark-inner-container">
+            <a class="bookmark" href="https://weibo.com" target="_blank"
+              >微博</a
+            >
+            <a class="bookmark" href="https://qzone.qq.com/" target="_blank"
+              >QQ空间</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function closeSearch() {
+        document.getElementById("search-field").value = "";
+        document.getElementById("search-field").blur();
+        document.getElementById("search").style.display = "none";
+      }
+      // Search on enter key event
+      function search(e) {
+        if (e.keyCode == 13) {
+          var val = document.getElementById("search-field").value;
+          window.open("https://google.com/search?q=" + val);
+          closeSearch();
+        }
+      }
+      // Get current time and format
+      function getTime() {
+        const date = new Date(),
+          min = date.getMinutes(),
+          sec = date.getSeconds(),
+          hour = date.getHours();
+        return (
+          "" +
+          (hour < 10 ? "0" + hour : hour) +
+          ":" +
+          (min < 10 ? "0" + min : min) +
+          ":" +
+          (sec < 10 ? "0" + sec : sec)
+        );
+      }
+
+      window.onload = async () => {
+        const response = await fetch(
+          "https://api.openweathermap.org/data/2.5/weather?q=Amiens,France&units=metric&appid=e5b292ae2f9dae5f29e11499c2d82ece"
+        );
+        if (response.ok) {
+          const json = await response.json();
+
+          document.getElementById("temp").innerHTML =
+            json.main.temp.toFixed(0) + "°C";
+          document.getElementById("weather-description").innerHTML =
+            json.weather[0].description;
+        }
+
+        // Set up the clock
+        document.getElementById("clock").innerHTML = getTime();
+        // Set clock interval to tick clock
+        setInterval(() => {
+          document.getElementById("clock").innerHTML = getTime();
+        }, 100);
+      };
+      document.addEventListener("keydown", event => {
+        if (event.keyCode == 32) {
+          // Spacebar code to open search
+          document.getElementById("search").style.display = "flex";
+          document.getElementById("search-field").focus();
+        } else if (event.keyCode == 27) {
+          // Esc to close search
+          closeSearch();
+        }
+      });
+    </script>
+  </body>
+</html>
